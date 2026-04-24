@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ralf Locher – B.E.S.T. Ingénieurs-Conseils</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --blue:       #1A3A6B;
+      --blue-mid:   #2351A0;
+      --blue-light: #3A6EC8;
+      --accent:     #C8992A;
+      --accent-l:   #E8C060;
+      --dark:       #0D1117;
+      --dark-2:     #111827;
+      --dark-3:     #1F2937;
+      --text:       #F0EBE0;
+      --text-muted: #8B9BB4;
+      --border:     rgba(58,110,200,0.22);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      padding: 2rem 1rem;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 85% 15%, rgba(35,81,160,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 15% 85%, rgba(26,58,107,0.10) 0%, transparent 60%);
+    }
+    .card-wrapper { width: 100%; max-width: 480px; animation: fadeUp 0.8s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card {
+      background: linear-gradient(150deg, var(--dark-2) 0%, var(--dark-3) 100%);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.65), 0 0 0 1px rgba(58,110,200,0.07) inset;
+      position: relative;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue), var(--blue-light), var(--blue-mid));
+    }
+    .header {
+      padding: 2.4rem 2.4rem 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo-box {
+      width: 88px;
+      height: 88px;
+      border-radius: 14px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      padding: 8px;
+    }
+    .logo-box img { width: 100%; height: 100%; object-fit: contain; }
+    .identity { flex: 1; min-width: 0; }
+    .company-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--blue-light);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text);
+    }
+    .title-line {
+      margin-top: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 400;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
+    .photo-row {
+      padding: 1.2rem 2.4rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .photo-placeholder {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(58,110,200,0.12), rgba(58,110,200,0.04));
+      border: 1.5px dashed rgba(58,110,200,0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .photo-placeholder:hover { border-color: var(--blue-light); background: rgba(58,110,200,0.1); }
+    .photo-placeholder img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .pp-icon { font-size: 1.2rem; }
+    .pp-text { font-size: 0.5rem; color: var(--blue-light); text-align: center; letter-spacing: 0.04em; }
+    #photo-input { display: none; }
+    .photo-hint { font-size: 0.7rem; color: var(--text-muted); line-height: 1.6; }
+    .photo-hint strong { color: var(--blue-light); }
+    .contacts {
+      padding: 1.6rem 2.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.2s;
+    }
+    .contact-item:hover { color: #7BB3FF; }
+    .ci-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(58,110,200,0.1);
+      border: 1px solid rgba(58,110,200,0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.88rem;
+      flex-shrink: 0;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .contact-item:hover .ci-icon { background: rgba(58,110,200,0.22); border-color: var(--blue-light); }
+    .ci-info { flex: 1; min-width: 0; }
+    .ci-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); }
+    .ci-value { font-size: 0.87rem; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .divider { margin: 0 2.4rem; border: none; border-top: 1px solid var(--border); }
+    .address-block {
+      padding: 1.2rem 2.4rem 1.6rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .address-block .ci-icon { margin-top: 2px; }
+    .address-text { font-size: 0.84rem; color: var(--text-muted); line-height: 1.75; }
+    .address-text strong { color: var(--text); font-weight: 500; }
+    .qr-section {
+      background: rgba(26,58,107,0.15);
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .qr-label {
+      font-size: 0.63rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blue-light);
+      text-align: center;
+    }
+    #qrcode {
+      background: white;
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.45);
+    }
+    #qrcode canvas, #qrcode img { display: block; border-radius: 4px; }
+    .qr-sub {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 270px;
+      line-height: 1.6;
+    }
+    .actions {
+      padding: 0 2.4rem 2rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+    .btn {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary { background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: #fff; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+    .btn-outline:hover { border-color: var(--blue-light); color: var(--blue-light); }
+    .card-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      opacity: 0.55;
+    }
+    @media print {
+      body { background: white; }
+      .card { box-shadow: none; border: 1px solid #ccc; }
+      .actions, .photo-row { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="card-wrapper">
+  <div class="card">
+    <div class="header">
+      <div class="logo-box">
+        <img
+          src="https://cdn.prod.website-files.com/67b5be60612de207a9d95228/67b5be60612de207a9d952d5_best-logo-blue.svg"
+          alt="BEST Ingénieurs-Conseils"
+          onerror="this.parentElement.innerHTML='<span style=\'font-size:0.8rem;color:#1A3A6B;font-weight:700;\'>B.E.S.T.</span>'"
+        >
+      </div>
+      <div class="identity">
+        <div class="company-name">Ingénieurs-Conseils</div>
+        <div class="name">Ralf Locher</div>
+        <div class="title-line">Service Assainissement<br>Électromécanique</div>
+      </div>
+    </div>
+
+    <div class="photo-row">
+      <div class="photo-placeholder" id="photo-circle" onclick="document.getElementById('photo-input').click()" title="Foto hochladen">
+        <span class="pp-icon">👤</span>
+        <span class="pp-text">Foto</span>
+      </div>
+      <input type="file" id="photo-input" accept="image/*" onchange="loadPhoto(this)">
+      <div class="photo-hint">
+        <strong>Profilfoto hinzufügen</strong><br>
+        Klicken Sie auf den Kreis, um<br>Ihr Foto hochzuladen.
+      </div>
+    </div>
+
+    <div class="contacts">
+      <a class="contact-item" href="tel:+352349090958">
+        <div class="ci-icon">📞</div>
+        <div class="ci-info">
+          <div class="ci-label">Telefon</div>
+          <div class="ci-value">+352 34 90 90 958</div>
+        </div>
+      </a>
+      <a class="contact-item" href="tel:+352621417311">
+        <div class="ci-icon">📱</div>
+        <div class="ci-info">
+          <div class="ci-label">Mobil</div>
+          <div class="ci-value">+352 621 417 311</div>
+        </div>
+      </a>
+      <a class="contact-item" href="mailto:rlocher@best.lu">
+        <div class="ci-icon">✉️</div>
+        <div class="ci-info">
+          <div class="ci-label">E-Mail</div>
+          <div class="ci-value">rlocher@best.lu</div>
+        </div>
+      </a>
+      <a class="contact-item" href="https://www.best.lu/" target="_blank">
+        <div class="ci-icon">🌐</div>
+        <div class="ci-info">
+          <div class="ci-label">Webseite</div>
+          <div class="ci-value">www.best.lu</div>
+        </div>
+      </a>
+    </div>
+
+    <hr class="divider">
+
+    <div class="address-block">
+      <div class="ci-icon">📍</div>
+      <div class="address-text">
+        <strong>2 Rue des Sapins</strong><br>
+        L-2513 Senningerberg<br>
+        Luxembourg
+      </div>
+    </div>
+
+    <div class="qr-section">
+      <div class="qr-label">✦ Digitale Visitenkarte ✦</div>
+      <div id="qrcode"></div>
+      <div class="qr-sub">QR-Code scannen, um diese Visitenkarte aufzurufen oder Kontakt direkt zu speichern.</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="downloadVCard()">⬇ Kontakt speichern</button>
+      <button class="btn btn-outline" onclick="window.print()">🖨 QR drucken</button>
+    </div>
+  </div>
+  <div class="card-footer">B.E.S.T. INGÉNIEURS-CONSEILS &nbsp;·&nbsp; SENNINGERBERG, LUXEMBOURG</div>
+</div>
+
+<script>
+  new QRCode(document.getElementById("qrcode"), {
+    text: "https://best15-my.sharepoint.com/:u:/g/personal/rlocher_best_lu/IQBoIPksvrNzQI5EbTztsaEJASQfIunjL2G4U5MB4WUEkHo?e=J6woQl",
+    width: 180,
+    height: 180,
+    colorDark: "#0D1117",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  function loadPhoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const circle = document.getElementById('photo-circle');
+      circle.innerHTML = '<img src="' + e.target.result + '" alt="Foto">';
+      circle.style.border = 'none';
+      document.querySelector('.photo-hint').innerHTML =
+        '<strong>Foto gespeichert</strong><br>Klicken zum Ändern.';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function downloadVCard() {
+    const vcard = [
+      'BEGIN:VCARD',
+      'VERSION:3.0',
+      'FN:Ralf Locher',
+      'N:Locher;Ralf;;;',
+      'ORG:B.E.S.T. Ingenieurs-Conseils',
+      'TITLE:Service Assainissement - Electromecanique',
+      'TEL;TYPE=WORK,VOICE:+352349090958',
+      'TEL;TYPE=CELL:+352621417311',
+      'EMAIL:rlocher@best.lu',
+      'ADR;TYPE=WORK:;;2 Rue des Sapins;Senningerberg;;L-2513;Luxembourg',
+      'URL:https://www.best.lu/',
+      'END:VCARD'
+    ].join('\r\n');
+    const blob = new Blob([vcard], { type: 'text/vcard' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'Ralf_Locher_BEST.vcf';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+</body>
+</html>
